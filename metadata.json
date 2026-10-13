@@ -1,0 +1,6 @@
+{
+  "name": "LOOKBOOK — AI Virtual Try-On & Digital Atelier",
+  "description": "Photorealistic virtual try-on in three seconds. Describe any outfit in plain English and see yourself wearing it, powered by neural couture rendering.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
