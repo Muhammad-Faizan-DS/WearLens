@@ -30,8 +30,7 @@ export function TryOnProductPage() {
     setAdded(true);
   };
 
-  // schema.org Product data. Anywear only switches on its product try-on when the page
-  // declares a Product, and reads the garment's name and images from it.
+  // schema.org Product data, for search results and link previews.
   const origin = window.location.origin;
   const productUrl = `${origin}/try-on/?product=${product.slug}`;
   const jsonLd = {
@@ -62,7 +61,7 @@ export function TryOnProductPage() {
       <meta property="og:image" content={origin + images.front} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <Navigation onOpenFittingRoom={openTryOn} />
+      <Navigation onTryOn={openTryOn} />
 
       <main className="max-w-7xl mx-auto px-6 pt-28 pb-24">
         {/* Breadcrumb */}
@@ -75,9 +74,7 @@ export function TryOnProductPage() {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
-          {/* Gallery: same-size front & back shots, swipeable on mobile and stacked on desktop.
-              Anywear pairs them for its try-on, so keep them equal in size and keep them out of
-              nav/header/footer/aside elements. */}
+          {/* Gallery: front & back shots, swipeable on mobile and stacked on desktop. */}
           <div className="lg:col-span-7 flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-6 px-6 lg:mx-0 lg:px-0 lg:flex-col lg:gap-4 lg:overflow-visible">
             {(['front', 'back'] as const).map((view) => (
               <div
@@ -151,11 +148,8 @@ export function TryOnProductPage() {
                   <span>Try it on live</span>
                 </button>
 
-                {/* The fixed aria-label is also how Anywear finds this button: its own
-                    "Add to bag" inside the try-on clicks it. */}
                 <button
                   onClick={addToBag}
-                  aria-label="Add to bag"
                   className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-white hover:bg-[#f5f5f7] text-[#1d1d1f] text-[15px] font-medium rounded-full hairline-border-dark transition-colors shadow-sm active:scale-[0.98] cursor-pointer"
                 >
                   {added ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
@@ -186,8 +180,7 @@ export function TryOnProductPage() {
           </div>
         </div>
 
-        {/* More to try on. Kept smaller than the gallery shots so Anywear doesn't mistake
-            one of these for the product being viewed. */}
+        {/* More to try on */}
         <section className="mt-24 space-y-8">
           <h2 className="font-headline text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f]">
             More to try on

@@ -163,7 +163,9 @@ export function LiveTryOn({ product, onClose }: LiveTryOnProps) {
 
       // Ignore events from a session we've already torn down.
       const isCurrent = () => session.current.client === client;
-      client.on('generationTick', ({ seconds }) => isCurrent() && setSeconds(seconds));
+      // Decart's billing ticks arrive too rarely to drive the clock; the effect below counts
+      // seconds locally and these keep it from falling behind the billed time.
+      client.on('generationTick', ({ seconds }) => isCurrent() && setSeconds((prev) => Math.max(prev, seconds)));
       client.on('sessionEnded', ({ reason }) => isCurrent() && finish(endedMessage(reason)));
       client.on('error', (err) => isCurrent() && finish(err.message || 'The try-on connection failed.', true));
       client.on('connectionChange', (state) => isCurrent() && state === 'disconnected' && finish('Session ended.'));
@@ -189,6 +191,13 @@ export function LiveTryOn({ product, onClose }: LiveTryOnProps) {
   };
 
   const live = phase === 'live';
+
+  // Session clock: runs once the try-on video is actually coming back.
+  useEffect(() => {
+    if (!live || !hasOutput) return;
+    const id = window.setInterval(() => setSeconds((prev) => prev + 1), 1000);
+    return () => window.clearInterval(id);
+  }, [live, hasOutput]);
 
   return (
     <div
@@ -296,13 +305,12 @@ export function LiveTryOn({ product, onClose }: LiveTryOnProps) {
                   onClick={() => switchGarment(p)}
                   aria-pressed={p.slug === garment.slug}
                   aria-label={`Try on ${p.name}`}
-                  // A background image rather than an <img>, so the Anywear widget doesn't add its
-                  // own try-on badges to these thumbnails.
-                  style={{ backgroundImage: `url(${productImages(p).front})` }}
-                  className={`aspect-[4/5] rounded-xl bg-[#f3f3f5] bg-cover bg-center border-2 transition-colors cursor-pointer ${
+                  className={`rounded-xl overflow-hidden bg-[#f3f3f5] border-2 transition-colors cursor-pointer ${
                     p.slug === garment.slug ? 'border-[#1d1d1f]' : 'border-transparent hover:border-black/20'
                   }`}
-                />
+                >
+                  <img src={productImages(p).front} alt="" width={1200} height={1500} className="block w-full h-auto" />
+                </button>
               ))}
             </div>
 

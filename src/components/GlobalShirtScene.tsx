@@ -16,7 +16,6 @@ const MODELS = [
   { url: '/models/free_shirt.glb', yaw: -Math.PI / 2 },
   { url: '/models/racks_airlines.glb', yaw: 0 },
   { url: '/models/shirt.glb', yaw: 0 },
-  { url: '/models/realistic_dress_shirt.glb', yaw: 0 },
 ];
 
 // Every model is normalised so its largest dimension is this many world units.
@@ -24,7 +23,7 @@ const MODEL_SIZE = 2.6;
 
 // Where the shirt can sit. 'philosophy' / 'result' resolve to the empty column
 // marked with data-shirt-anchor in that section.
-type Anchor = 'center' | 'philosophy' | 'result' | 'fitting';
+type Anchor = 'center' | 'philosophy' | 'result';
 
 // Scroll keyframes. As the page scrolls the scene's "stage" runs 0 → POSES.length - 1
 // and the shirt is interpolated between neighbouring poses.
@@ -34,8 +33,7 @@ const POSES: { anchor: Anchor; turn: number; model: number }[] = [
   { anchor: 'philosophy', turn: Math.PI * 2 - 0.2, model: 1 },   // 2 slow turn while the copy scrolls by
   { anchor: 'result', turn: Math.PI * 4 - 0.6, model: 2 },       // 3 lands right, angled toward the copy
   { anchor: 'result', turn: Math.PI * 4 + 0.2, model: 2 },       // 4 slow turn while the copy scrolls by
-  { anchor: 'fitting', turn: Math.PI * 6, model: 3 },            // 5 fitting
-];
+];                                                               // …then the closing footer slides over it
 
 // On the two-column layout each glide starts while the next section is still 30% of a
 // screen below the fold, so the shirt crosses over ~105vh of scroll instead of 75vh.
@@ -52,8 +50,7 @@ const STEPS = [
   { trigger: '#philosophy', start: glideFrom, end: 'top 25%', ease: glide },  // 0 → 1
   { trigger: '#philosophy', start: 'top 25%', end: holdUntil, ease: hold },   // 1 → 2
   { trigger: '#result', start: glideFrom, end: 'top 25%', ease: glide },      // 2 → 3
-  { trigger: '#result', start: 'top 25%', end: holdUntil, ease: hold },       // 3 → 4
-  { trigger: '#fitting', start: glideFrom, end: 'top 25%', ease: glide },     // 4 → 5
+  { trigger: '#result', start: 'top 25%', end: 'bottom bottom', ease: hold }, // 3 → 4 (last: no glide follows)
 ];
 
 // How quickly the shirt catches up with the scroll position (higher = snappier).
@@ -192,7 +189,6 @@ export function GlobalShirtScene() {
       center: CENTERED,
       philosophy: CENTERED,
       result: CENTERED,
-      fitting: CENTERED,
     };
 
     const measureAnchors = () => {
@@ -214,10 +210,6 @@ export function GlobalShirtScene() {
           alpha: 1,
         };
       });
-
-      // Fitting has an opaque background that slides over the shirt. On single-column layouts
-      // stay dimmed so the shirt doesn't brighten over the Result copy on its way there.
-      anchors.fitting = anchors.result === DIMMED ? DIMMED : CENTERED;
     };
 
     measureAnchors();
@@ -227,9 +219,10 @@ export function GlobalShirtScene() {
       ScrollTrigger.create({ trigger, start, end })
     );
 
-    // Active once Fitting has scrolled past the top of the viewport: from there on the
-    // solid sections below hide the canvas completely.
-    const covered = ScrollTrigger.create({ trigger: '#fitting', start: 'top top', end: 'max' });
+    // Active once the closing footer has scrolled past the top of the viewport: from there on
+    // it hides the canvas completely. (On tall screens the page ends first, which is fine:
+    // the shirt is then still partly visible above the footer.)
+    const covered = ScrollTrigger.create({ trigger: '#closing', start: 'top top', end: 'max' });
 
     // Interactive cursor tracking
     const mouse = { x: 0, y: 0 };

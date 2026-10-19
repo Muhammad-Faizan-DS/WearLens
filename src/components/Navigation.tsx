@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Volume2, VolumeX, Menu, X, Sparkles } from 'lucide-react';
-import { playMicroClick, toggleAmbientSoundscape } from '../utils/audioFeedback';
+import { Menu, X, Sparkles } from 'lucide-react';
 
 interface NavigationProps {
-  onOpenFittingRoom: () => void;
+  onTryOn: () => void;
 }
 
 // Absolute paths so the links also work from the try-on shop page.
@@ -11,33 +10,18 @@ const NAV_ITEMS = [
   { href: '/#atelier', label: 'Atelier' },
   { href: '/#philosophy', label: 'Philosophy' },
   { href: '/#result', label: 'Result' },
-  { href: '/#fitting', label: 'Fitting' },
-  { href: '/#live', label: 'Live' },
-  { href: '/#lookbook', label: 'Lookbook' },
   { href: '/try-on/', label: 'Shop' },
 ];
 
-export function Navigation({ onOpenFittingRoom }: NavigationProps) {
-  const [soundOn, setSoundOn] = useState(false);
+export function Navigation({ onTryOn }: NavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleToggleSound = () => {
-    const nextState = !soundOn;
-    setSoundOn(nextState);
-    toggleAmbientSoundscape(nextState);
-    if (nextState) {
-      playMicroClick(1500, 0.05);
-    }
-  };
-
   const handleNavClick = () => {
-    playMicroClick(1100, 0.03);
     setMobileMenuOpen(false);
   };
 
   const handleTryOnClick = () => {
-    playMicroClick(1400, 0.04);
-    onOpenFittingRoom();
+    onTryOn();
     setMobileMenuOpen(false);
   };
 
@@ -47,7 +31,6 @@ export function Navigation({ onOpenFittingRoom }: NavigationProps) {
         {/* Brand Wordmark in system font */}
         <a
           href="/"
-          onClick={() => playMicroClick(900, 0.03)}
           className="font-headline text-xl font-semibold text-[#1d1d1f] hover:text-[#000000] transition-colors whitespace-nowrap flex items-center gap-2"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-[#1d1d1f]" />
@@ -68,20 +51,8 @@ export function Navigation({ onOpenFittingRoom }: NavigationProps) {
           ))}
         </nav>
 
-        {/* Right Action Button & Soundscape Toggle */}
+        {/* Right Action Button */}
         <div className="flex items-center gap-3">
-          {/* Ambient Soundscape Toggle (Astra Standard) */}
-          <button
-            onClick={handleToggleSound}
-            className={`p-2 rounded-full glass-pill transition-all cursor-pointer ${
-              soundOn ? 'text-[#0071e3] bg-[#0071e3]/10' : 'text-[#86868b] hover:text-[#1d1d1f]'
-            }`}
-            title={soundOn ? 'Mute ambient audio' : 'Enable ambient audio (Astra 432Hz Soundscape)'}
-            aria-label="Toggle audio"
-          >
-            {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-          </button>
-
           <button
             onClick={handleTryOnClick}
             className="hidden sm:inline-flex items-center gap-2 px-5 py-2 text-[13px] font-subline font-medium text-white bg-[#1d1d1f] hover:bg-[#000000] active:scale-95 rounded-full transition-all duration-200 whitespace-nowrap shadow-sm cursor-pointer"
@@ -92,10 +63,7 @@ export function Navigation({ onOpenFittingRoom }: NavigationProps) {
 
           {/* Mobile Menu Trigger */}
           <button
-            onClick={() => {
-              playMicroClick(1000, 0.03);
-              setMobileMenuOpen(!mobileMenuOpen);
-            }}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2.5 rounded-full glass-pill text-[#0a0a0f] cursor-pointer"
             aria-label="Toggle menu"
           >
