@@ -42,7 +42,7 @@ export function TryOnProductPage() {
     category: product.category,
     color: product.colorName,
     image: [origin + images.front, origin + images.back],
-    brand: { '@type': 'Brand', name: 'Lookbook' },
+    brand: { '@type': 'Brand', name: 'WearLens' },
     offers: {
       '@type': 'Offer',
       url: productUrl,
@@ -54,7 +54,7 @@ export function TryOnProductPage() {
 
   return (
     <div className="min-h-screen bg-[#f5f6f9] text-[#111218] selection:bg-[#ff7711]/20 selection:text-[#0a0a0f] font-subline">
-      <title>{`${product.name} — Try On · Lookbook`}</title>
+      <title>{`${product.name} — Try On · WearLens`}</title>
       <meta name="description" content={product.description} />
       <meta property="og:title" content={product.name} />
       <meta property="og:url" content={productUrl} />
@@ -66,7 +66,7 @@ export function TryOnProductPage() {
       <main className="max-w-7xl mx-auto px-6 pt-28 pb-24">
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="mb-8 flex items-center gap-2 whitespace-nowrap text-[13px] text-[#86868b] font-medium">
-          <a href="/" className="hover:text-[#1d1d1f] transition-colors">Lookbook</a>
+          <a href="/" className="hover:text-[#1d1d1f] transition-colors">WearLens</a>
           <span className="text-black/20">/</span>
           <a href="/try-on/" className="hover:text-[#1d1d1f] transition-colors">Try-On Shop</a>
           <span className="text-black/20">/</span>
@@ -214,13 +214,13 @@ export function TryOnProductPage() {
             href="/"
             className="font-headline text-[17px] font-semibold tracking-tight text-[#1d1d1f] hover:opacity-70 transition-opacity"
           >
-            Lookbook
+            WearLens
           </a>
           <a href="/" className="inline-flex items-center gap-1.5 hover:text-[#1d1d1f] transition-colors">
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to the atelier</span>
           </a>
-          <div>&copy; 2026 Lookbook Atelier</div>
+          <div>&copy; 2026 WearLens</div>
         </div>
       </footer>
 

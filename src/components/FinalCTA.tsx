@@ -49,7 +49,7 @@ export function FinalCTA() {
             href="#"
             className="font-headline text-[17px] font-semibold tracking-tight text-[#1d1d1f] hover:opacity-70 transition-opacity"
           >
-            Lookbook
+            WearLens
           </a>
 
           <div className="flex flex-wrap items-center justify-center gap-6 font-medium text-[#86868b]">
@@ -67,7 +67,7 @@ export function FinalCTA() {
           </div>
 
           <div className="font-subline text-[13px] text-[#86868b]">
-            &copy; 2026 Lookbook Atelier
+            &copy; 2026 WearLens
           </div>
         </div>
       </div>

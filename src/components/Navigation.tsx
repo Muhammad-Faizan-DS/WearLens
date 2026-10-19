@@ -34,7 +34,7 @@ export function Navigation({ onTryOn }: NavigationProps) {
           className="font-headline text-xl font-semibold text-[#1d1d1f] hover:text-[#000000] transition-colors whitespace-nowrap flex items-center gap-2"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-[#1d1d1f]" />
-          <span>Lookbook</span>
+          <span>WearLens</span>
         </a>
 
         {/* Center Floating Segmented Pill Bar */}
