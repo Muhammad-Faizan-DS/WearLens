@@ -11,7 +11,8 @@ const TRY_ON_MODELS = ['lucy-vton-latest', 'lucy-vton-3.6'];
 const MAX_SESSION_SECONDS = 180;
 
 export async function POST() {
-  const apiKey = process.env.DECART_API_KEY;
+  // Tolerate the key being pasted into the env var with surrounding quotes or whitespace.
+  const apiKey = process.env.DECART_API_KEY?.trim().replace(/^(['"])(.*)\1$/, '$2');
   if (!apiKey) {
     return Response.json({ error: 'DECART_API_KEY is not set' }, { status: 503 });
   }
@@ -25,6 +26,9 @@ export async function POST() {
     return Response.json({ apiKey: token.apiKey, expiresAt: token.expiresAt });
   } catch (err) {
     console.error('Failed to create Decart client token', err);
-    return Response.json({ error: 'Failed to create token' }, { status: 502 });
+    // Pass on Decart's reason (e.g. `401 - {"error":"Invalid or expired API key"}`), which
+    // never contains the key, so a broken deployment can be diagnosed from the browser.
+    const reason = (err as { message?: string })?.message?.replace(/^Failed to create token:\s*/, '');
+    return Response.json({ error: 'Failed to create token', reason }, { status: 502 });
   }
 }
